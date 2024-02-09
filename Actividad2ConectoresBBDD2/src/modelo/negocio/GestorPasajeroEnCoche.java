@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Map;
 
 import modelo.entidad.Coche;
+import modelo.entidad.PasajeroEnCoche;
 import modelo.persistencia.acceso.DaoPasajeroEnCocheMySql;
 import modelo.persistencia.interfaces.DaoPasajeroEnCoche;
 /**
@@ -30,17 +31,17 @@ public class GestorPasajeroEnCoche {
      *         Si no se puede abrir la conexión, devuelve null.
      */
     public List<Coche> mostrarCochesDisponibles() {
-    	List<Coche> listaAuxiliar = daoPC.mostrarCochesDisponibles();
+    	List<Coche> listaAuxiliar = daoPC.mostrarCochesSinPasajeros();
 		return listaAuxiliar;
     }
   		
     /**
   	 * Muestra todos los coches y sus pasajeros asociados en la base de datos.  	 *
-  	 * @return Una lista de objetos Coche con información sobre los coches y sus pasajeros asociados.
+  	 * @return Una lista de objetos PasajeroEnCoche con información sobre los coches y sus pasajeros asociados.
   	 *         Si no se puede abrir la conexión, devuelve null.
   	 */
-    public List<Coche> mostrarCochesConPasajeros() {
-    	List<Coche> listaAuxiliar = daoPC.mostrarCochesConPasajeros();
+    public List<PasajeroEnCoche> mostrarCochesConPasajeros() {
+    	List<PasajeroEnCoche> listaAuxiliar = daoPC.mostrarCochesConPasajeros();
 		return listaAuxiliar;
     }
     /**
@@ -78,11 +79,11 @@ public class GestorPasajeroEnCoche {
      * Metodo para obtiener una lista de coches con información sobre los pasajeros asociados a un coche específico.
      *
      * @param idCoche El ID del coche del cual se desea obtener la información de pasajeros.
-     * @return Una lista de objetos Coche con información sobre los pasajeros asociados al coche.
+     * @return Una lista de objetos PasajeroEnCoche con información sobre los pasajeros asociados al coche.
      *         Si no se puede abrir la conexión, devuelve null.
      */
-	public List<Coche> pasajerosEnCoche(int idCoche) {
-		List<Coche> listaAuxiliar = daoPC.pasajerosEnCoche(idCoche);
+	public List<PasajeroEnCoche> pasajerosEnCoche(int idCoche) {
+		List<PasajeroEnCoche> listaAuxiliar = daoPC.pasajerosEnCochePorId(idCoche);
 		return listaAuxiliar;
     }
 	

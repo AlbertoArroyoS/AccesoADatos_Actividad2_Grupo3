@@ -12,7 +12,10 @@ import java.util.Map;
 
 import modelo.entidad.Coche;
 import modelo.entidad.Pasajero;
+import modelo.entidad.PasajeroEnCoche;
 import modelo.persistencia.datos.ConfiguracionPropiedades;
+import modelo.persistencia.interfaces.DaoCoche;
+import modelo.persistencia.interfaces.DaoPasajero;
 import modelo.persistencia.interfaces.DaoPasajeroEnCoche;
 /**
  * Clase que implementa el interfaz DaoPasajeroEnCoche y proporciona métodos para interactuar con la persistencia
@@ -106,42 +109,43 @@ public class DaoPasajeroEnCocheMySql implements DaoPasajeroEnCoche{
 	 * Obtiene una lista de coches con información sobre los pasajeros asociados a un coche específico.
 	 *
 	 * @param idCoche El ID del coche del cual se desea obtener la información de pasajeros.
-	 * @return Una lista de objetos Coche con información sobre los pasajeros asociados al coche.
+	 * @return Una lista de objetos PasajeroEnCoche con información sobre los pasajeros asociados al coche.
 	 *         Si no se puede abrir la conexión, devuelve null.
 	 */
 	@Override
-	public List<Coche> pasajerosEnCoche(int idCoche) {
+	public List<PasajeroEnCoche> pasajerosEnCochePorId(int idCoche) {
 		if(!abrirConexion()){
 			filas=2;
 			return null;
 		}	
-		Coche coche = null;
-		List<Coche> listaPasajeros = new ArrayList<>();
-		sql = "SELECT p.id, p.nombre, p.edad, p.peso " +
-	              "FROM coches c " +
-	              "INNER JOIN pasajeros_en_coches pc ON c.id = pc.id_coche " +
-	              "INNER JOIN pasajeros p ON pc.id_pasajero = p.id " +
-	              "WHERE c.id = ?";
-        
-        
-        try (PreparedStatement pstmt = conexion.prepareStatement(sql)) {
-            pstmt.setInt(1, idCoche);
+		PasajeroEnCoche cochePasajero = null;
+		Coche coche=null;
+		Pasajero pasajero=null;
+		List<PasajeroEnCoche> listaPasajeros = new ArrayList<>();
+		
+        String sql = "SELECT * FROM Pasajeros_En_Coches WHERE id_coche = ?";
 
-            try (ResultSet rs = pstmt.executeQuery()) {
+        try (PreparedStatement ps = conexion.prepareStatement(sql)) {
+            ps.setInt(1, idCoche);
+
+            try (ResultSet rs = ps.executeQuery()) {
                 while (rs.next()) {
-                	coche = new Coche();             	
+                	cochePasajero = new PasajeroEnCoche ();
+                	DaoCoche daoCoche = new DaoCocheMySql();
+                	DaoPasajero daoPasajero= new DaoPasajeroMySql();
+                	coche = new Coche();
+                	pasajero = new Pasajero();
+                	
+                	int idCocheResultado = rs.getInt("id_coche");
+                    int idPasajero = rs.getInt("id_pasajero");
+                    
+                    coche = daoCoche.buscarCoche(idCocheResultado);
+                    pasajero= daoPasajero.buscarPasajero(idPasajero);
                 
-                    Pasajero pasajero = new Pasajero();
-      			    pasajero.setId_pasajero(rs.getInt(1));
-      			    pasajero.setNombre(rs.getString(2));
-      			    pasajero.setEdad(rs.getInt(3));
-      			    pasajero.setPeso(rs.getDouble(4));
-
-      			    // Asignar el Pasajero al Coche
-      			    coche.setPasajero(pasajero);
-                    
-                    
-                    listaPasajeros.add(coche);
+                    cochePasajero.setCoche(coche);
+                    cochePasajero.setPasajero(pasajero);
+             
+                    listaPasajeros.add(cochePasajero);
                 }
             }
 
@@ -160,7 +164,7 @@ public class DaoPasajeroEnCocheMySql implements DaoPasajeroEnCoche{
 	 *         Si no se puede abrir la conexión, devuelve null.
 	 */
     @Override
-    public List<Coche> mostrarCochesDisponibles() {
+    public List<Coche> mostrarCochesSinPasajeros() {
   		if(!abrirConexion()){
 			filas=2;
 			return null;
@@ -214,7 +218,7 @@ public class DaoPasajeroEnCocheMySql implements DaoPasajeroEnCoche{
                      "COUNT(pc.id_pasajero) AS num_pasajeros_en_coches " +
                      "FROM coches c " +
                      "LEFT JOIN pasajeros_en_coches pc ON c.id = pc.id_coche " +
-                     "WHERE pc.id_pasajero IS NOT NULL " +
+                 //    "WHERE pc.id_pasajero IS NOT NULL " +
                      "GROUP BY coche_id, c.marca, c.modelo, c.año_fabricacion, c.kilometros";
 
         try (PreparedStatement pstmt = conexion.prepareStatement(sql);
@@ -244,46 +248,41 @@ public class DaoPasajeroEnCocheMySql implements DaoPasajeroEnCoche{
     /**
 	 * Muestra todos los coches y sus pasajeros asociados en la base de datos.
 	 *
-	 * @return Una lista de objetos Coche con información sobre los coches y sus pasajeros asociados.
+	 * @return Una lista de objetos PasajeroEnCoche con información sobre los coches y sus pasajeros asociados.
 	 *         Si no se puede abrir la conexión, devuelve null.
 	 */
   	@Override
-  	public List<Coche> mostrarCochesConPasajeros() {
+  	public List<PasajeroEnCoche> mostrarCochesConPasajeros() {
     	if(!abrirConexion()){
 			filas=2;
 			return null;
 		}	
-    	List<Coche> listaAuxiliar = new ArrayList<>();
+    	List<PasajeroEnCoche> listaAuxiliar = new ArrayList<>();
     	
-    	sql = "SELECT c.id AS id_coche, c.marca, c.modelo, c.año_fabricacion, c.kilometros, p.id AS id_pasajero, p.nombre, p.edad, p.peso " +
-                "FROM coches c " +
-                "LEFT JOIN pasajeros_en_coches pc ON c.id = pc.id_coche " +
-                "LEFT JOIN pasajeros p ON pc.id_pasajero = p.id " +
-                "WHERE pc.id_pasajero IS NOT NULL";
-    	
+    	sql = "SELECT * FROM PASAJEROS_EN_COCHES;";
+    	PasajeroEnCoche cochePasajero;
         Coche coche = null;
+        Pasajero pasajero = null;
         try (PreparedStatement pstmt = conexion.prepareStatement(sql);
              ResultSet rs = pstmt.executeQuery()) {
 
             while (rs.next()) {
+            	cochePasajero = new PasajeroEnCoche ();
+            	DaoCoche daoCoche = new DaoCocheMySql();
+            	DaoPasajero daoPasajero= new DaoPasajeroMySql();
             	coche = new Coche();
-              	coche.setId(rs.getInt(1));
-  				coche.setMarca(rs.getString(2));
-  				coche.setModelo(rs.getString(3));
-  				coche.setFabYear(rs.getInt(4));
-  				coche.setKilometros(rs.getInt(5));
-  				
-  			// Inicializar un nuevo objeto Pasajero
-  			    Pasajero pasajero = new Pasajero();
-  			    pasajero.setId_pasajero(rs.getInt(6));
-  			    pasajero.setNombre(rs.getString(7));
-  			    pasajero.setEdad(rs.getInt(8));
-  			    pasajero.setPeso(rs.getDouble(9));
-
-  			    // Asignar el Pasajero al Coche
-  			    coche.setPasajero(pasajero);
-
-  			    listaAuxiliar.add(coche);
+            	pasajero = new Pasajero();
+            	
+            	int idCocheResultado = rs.getInt("id_coche");
+                int idPasajero = rs.getInt("id_pasajero");
+                
+                coche = daoCoche.buscarCoche(idCocheResultado);
+                pasajero= daoPasajero.buscarPasajero(idPasajero);
+            
+                cochePasajero.setCoche(coche);
+                cochePasajero.setPasajero(pasajero);
+                   	
+  			   listaAuxiliar.add(cochePasajero);
 
           
             }

@@ -15,17 +15,6 @@ public class Coche {
 	private int fabYear;
 	private int kilometros;
 	
-	//relacion 1:N 
-	private Pasajero pasajero;
-	
-	
-	public Pasajero getPasajero() {
-		return pasajero;
-	}
-
-	public void setPasajero(Pasajero pasajero) {
-		this.pasajero = pasajero;
-	}
 
 	//Constructor por defecto
 	public Coche() {
