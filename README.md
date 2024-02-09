@@ -1,7 +1,7 @@
 
 # Acceso a Datos
 
-## Actividad 2 – Actividad grupal – Manejo de conectores de BBDD (JDBC)
+## Actividad 2 – Manejo de conectores de BBDD (JDBC)
 
 Actividad Realizada por:
 
