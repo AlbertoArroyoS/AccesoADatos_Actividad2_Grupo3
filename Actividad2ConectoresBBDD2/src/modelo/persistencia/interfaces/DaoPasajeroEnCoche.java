@@ -8,6 +8,9 @@ import modelo.entidad.PasajeroEnCoche;
 /**
  * Esta interfaz proporciona métodos para gestionar la relación entre Coches y Pasajeros en una base de datos.
  * Implementar esta interfaz permite la interacción con la capa de persistencia para la relación entre Coches y Pasajeros.
+ * 
+ * @author Alberto Arroyo Santofimia
+ * @version 2.0
  */
 public interface DaoPasajeroEnCoche {
 	

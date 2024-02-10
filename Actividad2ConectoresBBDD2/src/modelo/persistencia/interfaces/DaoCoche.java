@@ -6,6 +6,9 @@ import modelo.entidad.Coche;
 /**
  * Esta interfaz proporciona métodos para realizar operaciones CRUD (Crear, Leer, Actualizar, Eliminar) en objetos de tipo Coche en una base de datos.
  * Implementar esta interfaz permite la interacción con la capa de persistencia para la entidad Coche.
+ * 
+ * @author Alberto Arroyo Santofimia
+ * @version 2.0
  */
 public interface DaoCoche {
 	

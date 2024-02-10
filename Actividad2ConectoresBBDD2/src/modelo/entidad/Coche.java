@@ -2,7 +2,8 @@ package modelo.entidad;
 /**
  * Clase que representa un coche.
  * 
- * Esta clase contiene atributos que describen las características de un coche, 
+ * Esta clase contiene atributos que describen las características de un coche. 
+ * 
  * @author Alberto Arroyo Santofimia
  * @version 2.0
  */
