@@ -5,7 +5,12 @@
 
 Actividad Realizada por:
 
-###  Alberto Arroyo Santofimia
+### GRUPO 3
+
+- Alejandro Aguiar Díaz. 
+- Alberto Arroyo Santofimia.
+- Andrés Avendaño Monteagudo. 
+- Carmen Álvarez -Montenegro Piñeiro.
 
 
 # Objetivos
