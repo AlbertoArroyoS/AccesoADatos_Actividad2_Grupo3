@@ -69,8 +69,8 @@ public class TablasBaseDeDatos {
                     + "id_coche INT,"
                     + "id_pasajero INT,"
                     + "PRIMARY KEY (id_coche, id_pasajero),"
-                    + "FOREIGN KEY (id_coche) REFERENCES coches(id),"
-                    + "FOREIGN KEY (id_pasajero) REFERENCES Pasajeros(id)"
+                    + "FOREIGN KEY (id_coche) REFERENCES coches(id) ON DELETE CASCADE,"
+                    + "FOREIGN KEY (id_pasajero) REFERENCES Pasajeros(id) ON DELETE CASCADE"
                     + ")");
         }
     }
